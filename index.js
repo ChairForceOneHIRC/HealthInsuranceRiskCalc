@@ -16,6 +16,19 @@ app.get('', (request, response) =>{
 /*API that calculates the BMI*/
 app.get('/calculateBMI', (request, response) =>{
     consolse.log('Calculating BMI on Server')
+    var inputs = url.parse(request.url, true).query
+	const heightFeet = parseInt(inputs.feet)
+	const heightInches = parseInt(inputs.inches)
+	const weight = parseInt(inputs.lbs)
+
+	console.log('Height:' + heightFeet + '\'' + heightInches + '\"')
+	console.log('Weight:' + weight + ' lbs.')
+
+	// Todo: Implement unit conversions and BMI calculations.
+	// Todo: Return BMI instead of Todo message.
+
+	response.type('text/plain')
+	response.send('Todo: Implement "/calculate-bmi"')
 
 })
 

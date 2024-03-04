@@ -16,23 +16,19 @@ app.get('', (request, response) =>{
 
 /*API that calculates the BMI*/
 app.get('/calculateBMI', (request, response) =>{
-    console.log('Calculating BMI on Server')
-    var inputs = url.parse(request.url, true).query
-	//const heightFeet = parseInt(inputs.feet) //i don't think this is needed bc the client side has you only putting in height in inches
-	const height = parseInt(inputs.inches)
-	const weight = parseInt(inputs.lbs)
+    console.log('Calculating BMI on Server');
+    const { weight, feet, inches } = request.query;
 
-	//console.log('Height:' + heightFeet + '\'' + heightInches + '\"')
-    console.log('Height' + height + 'inches')
-	console.log('Weight:' + weight + ' lbs.')
+    // Convert height to inches
+    const height = parseInt(feet) * 12 + parseInt(inches);
+    console.log('Height:', height, 'inches');
+    console.log('Weight:', weight, 'lbs');
 
-  
-    const bmi=(weight/(height**2))*703
-    console.log("your bmi: ", bmi)
+    const bmi = (weight / (height * height)) * 703;
+    console.log('Your BMI:', bmi);
 
-    var result = 'Your BMI is: ' + bmi
-	response.type('text/plain')
-	response.send(result)
+    response.type('text/plain');
+    response.send(bmi.toString());
 
 })
 

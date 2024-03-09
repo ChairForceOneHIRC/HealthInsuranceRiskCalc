@@ -5,6 +5,7 @@ const http = require('http')
 const cors = require("cors")
 const port = process.env.PORT || 3000
 
+
 app.use(cors({ origin: '*' }))
 
 /*Home page for the server*/
@@ -14,23 +15,8 @@ app.get('', (request, response) =>{
     response.send('This is a server for ChairForceOnes Health Insurance Risk Calculator')
 })
 
-/*API that calculates the BMI*/
-app.get('/calculateBMI', (request, response) =>{
-    console.log('Calculating BMI on Server');
-    const { weight, feet, inches } = request.query;
+/*Removed BMI directory since Hima incorpated it below with calculateRisk and tbh its much more simple that way*/ 
 
-    // Convert height to inches
-    const height = parseInt(feet) * 12 + parseInt(inches);
-    console.log('Height:', height, 'inches');
-    console.log('Weight:', weight, 'lbs');
-
-    const bmi = (weight / (height * height)) * 703;
-    console.log('Your BMI:', bmi);
-
-    response.type('text/plain');
-    response.send(bmi.toString());
-
-})
 
 /*API that calculates the Coverage Risk*/
 app.get('/calculateRisk', (request, response) => {
@@ -39,9 +25,16 @@ app.get('/calculateRisk', (request, response) => {
     const diabetesCheck = diabetes == 'true'
     const cancerCheck = cancer == 'true'
     const alzheimersCheck = alzheimers == 'true'
+
+
+   // Calculate BMI
+   const height = parseInt(feet) * 12 + parseInt(inches);
+   const bmi = (weight / (height * height)) * 703;
+   console.log("BMI: " + bmi);
+
+
     //Calculate Total Score
-    let totalScore = calculateAgeScore(age) + calculateBmiScore(weight,feet,inches) + calculateBloodPressureScore(systolic_bp, diastolic_bp) + calculateFamilyDiseaseScore(diabetesCheck,cancerCheck,alzheimersCheck)
-    
+    let totalScore = calculateAgeScore(age) + calculateBmiScore(bmi) + calculateBloodPressureScore(systolic_bp, diastolic_bp) + calculateFamilyDiseaseScore(diabetesCheck,cancerCheck,alzheimersCheck)
     //Assign Total Score to Risk Category
     let riskCategory
     if (totalScore <= 20) {
@@ -54,13 +47,14 @@ app.get('/calculateRisk', (request, response) => {
         riskCategory = "Uninsurable"
     }
     
+    console.log("riskCategory: " + riskCategory)
     response.type('text/plain')
-    response.send(riskCategory)
+    //sends BMI and riskCategory over to display as JSON objects
+    response.send(JSON.stringify({ riskCategory: riskCategory, BMI: bmi }))
 
 })
-function calculateBmiScore(weight,feet,inches) {
-    const height = parseInt(feet) * 12 + parseInt(inches);
-    const bmi = (weight / (height * height)) * 703;
+function calculateBmiScore(bmi) {
+ 
 
     //Getting BMI score
     let bmiScore = 0

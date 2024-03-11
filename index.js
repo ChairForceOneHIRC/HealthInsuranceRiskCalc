@@ -15,6 +15,13 @@ app.get('', (request, response) =>{
     response.send('This is a server for ChairForceOnes Health Insurance Risk Calculator')
 })
 
+
+// Ping route
+app.get('/ping', (request, response) => {
+    console.log('Ping received');
+    response.send('Ping received');
+});
+
 /*Removed BMI directory since Hima incorpated it below with calculateRisk and tbh its much more simple that way*/ 
 
 
